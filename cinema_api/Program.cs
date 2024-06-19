@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace cinema_api
 {
 	public class Program
@@ -6,18 +8,15 @@ namespace cinema_api
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			// Add services to the container.
-
 			builder.Services.AddControllers();
 
-			var app = builder.Build();
+			builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-			// Configure the HTTP request pipeline.
+			var app = builder.Build();
 
 			app.UseHttpsRedirection();
 
 			app.UseAuthorization();
-
 
 			app.MapControllers();
 
