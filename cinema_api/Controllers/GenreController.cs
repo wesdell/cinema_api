@@ -20,11 +20,26 @@ namespace cinema_api.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<List<GenreDTO>>> Get()
+		public async Task<ActionResult<List<GenreDTO>>> GetAll()
 		{
 			List<Genre> genres = await _applicationContext.Genre.ToListAsync();
+
 			List<GenreDTO> genreDTOs = _mapper.Map<List<GenreDTO>>(genres);
 			return genreDTOs;
+		}
+
+		[HttpGet("{id:int}", Name = "GetById")]
+		public async Task<ActionResult<GenreDTO>> GetById(int id)
+		{
+			Genre genre = await _applicationContext.Genre.FirstOrDefaultAsync(genere => genre.Id == id);
+
+			if (genre == null)
+			{
+				return NotFound();
+			}
+
+			GenreDTO genreDTO = _mapper.Map<GenreDTO>(genre);
+			return genreDTO;
 		}
 	}
 }
