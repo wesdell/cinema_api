@@ -65,5 +65,22 @@ namespace cinema_api.Controllers
 
 			return NoContent();
 		}
+
+
+		[HttpDelete("{id:int}")]
+		public async Task<ActionResult> Delete(int id)
+		{
+			bool existsGenre = await _applicationContext.Genre.AnyAsync(genre => genre.Id == id);
+
+			if (!existsGenre)
+			{
+				return NotFound();
+			}
+
+			_applicationContext.Remove(new { Id = id });
+			await _applicationContext.SaveChangesAsync();
+
+			return NoContent();
+		}
 	}
 }
