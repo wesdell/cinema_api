@@ -31,7 +31,7 @@ namespace cinema_api.Controllers
 		[HttpGet("{id:int}", Name = "GetById")]
 		public async Task<ActionResult<GenreDTO>> GetById(int id)
 		{
-			Genre genre = await _applicationContext.Genre.FirstOrDefaultAsync(genere => genre.Id == id);
+			Genre genre = await _applicationContext.Genre.FirstOrDefaultAsync(genre => genre.Id == id);
 
 			if (genre == null)
 			{
@@ -52,6 +52,18 @@ namespace cinema_api.Controllers
 
 			GenreDTO genreDTO = _mapper.Map<GenreDTO>(newGenre);
 			return new CreatedAtRouteResult("GetById", new { id = genreDTO.Id }, genreDTO);
+		}
+
+		[HttpPut("{id:int}")]
+		public async Task<ActionResult> Put([FromBody] UpdateGenreDTO updateGenreDTO, int id)
+		{
+			Genre newGenre = _mapper.Map<Genre>(updateGenreDTO);
+			newGenre.Id = id;
+
+			_applicationContext.Entry(newGenre).State = EntityState.Modified;
+			await _applicationContext.SaveChangesAsync();
+
+			return NoContent();
 		}
 	}
 }
