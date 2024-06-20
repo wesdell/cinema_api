@@ -41,5 +41,17 @@ namespace cinema_api.Controllers
 			GenreDTO genreDTO = _mapper.Map<GenreDTO>(genre);
 			return genreDTO;
 		}
+
+		[HttpPost]
+		public async Task<ActionResult> Post([FromBody] CreateGenreDTO createGenreDTO)
+		{
+			Genre newGenre = _mapper.Map<Genre>(createGenreDTO);
+
+			_applicationContext.Add(newGenre);
+			await _applicationContext.SaveChangesAsync();
+
+			GenreDTO genreDTO = _mapper.Map<GenreDTO>(newGenre);
+			return new CreatedAtRouteResult("GetById", new { id = genreDTO.Id }, genreDTO);
+		}
 	}
 }
