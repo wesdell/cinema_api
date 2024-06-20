@@ -10,6 +10,8 @@ namespace cinema_api
 
 			builder.Services.AddControllers();
 
+			builder.Services.AddAutoMapper(typeof(Program));
+
 			builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 			var app = builder.Build();
