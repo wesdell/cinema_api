@@ -10,6 +10,7 @@ namespace cinema_api.Helpers
 		{
 			CreateMap<Genre, GenreDTO>().ReverseMap();
 			CreateMap<CreateGenreDTO, Genre>();
+			CreateMap<UpdateGenreDTO, Genre>();
 		}
 	}
 }
