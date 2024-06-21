@@ -42,5 +42,17 @@ namespace cinema_api.Controllers
 			ActorDTO actorDTO = _mapper.Map<ActorDTO>(actor);
 			return actorDTO;
 		}
+
+		[HttpPost]
+		public async Task<ActionResult> Post([FromBody] CreateActorDTO createActorDTO)
+		{
+			Actor actor = _mapper.Map<Actor>(createActorDTO);
+
+			_applicationContext.Add(actor);
+			await _applicationContext.SaveChangesAsync();
+
+			ActorDTO actorDTO = _mapper.Map<ActorDTO>(actor);
+			return new CreatedAtRouteResult("GetById", new { id = actor.Id }, actorDTO);
+		}
 	}
 }
