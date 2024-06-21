@@ -29,7 +29,7 @@ namespace cinema_api.Controllers
 		}
 
 
-		[HttpGet("{id:int}", Name = "GetById")]
+		[HttpGet("{id:int}", Name = "GetActorById")]
 		public async Task<ActionResult<ActorDTO>> GetById(int id)
 		{
 			Actor actor = await _applicationContext.Actor.FirstOrDefaultAsync(actor => actor.Id == id);
@@ -52,7 +52,7 @@ namespace cinema_api.Controllers
 			await _applicationContext.SaveChangesAsync();
 
 			ActorDTO actorDTO = _mapper.Map<ActorDTO>(actor);
-			return new CreatedAtRouteResult("GetById", new { id = actor.Id }, actorDTO);
+			return new CreatedAtRouteResult("GetActorById", new { id = actor.Id }, actorDTO);
 		}
 
 		[HttpPut("{id:int}")]
