@@ -27,5 +27,20 @@ namespace cinema_api.Controllers
 			List<ActorDTO> authorDTOs = _mapper.Map<List<ActorDTO>>(authors);
 			return authorDTOs;
 		}
+
+
+		[HttpGet("{id:int}", Name = "GetById")]
+		public async Task<ActionResult<ActorDTO>> GetById(int id)
+		{
+			Actor actor = await _applicationContext.Actor.FirstOrDefaultAsync(actor => actor.Id == id);
+
+			if (actor == null)
+			{
+				return NotFound();
+			}
+
+			ActorDTO actorDTO = _mapper.Map<ActorDTO>(actor);
+			return actorDTO;
+		}
 	}
 }
