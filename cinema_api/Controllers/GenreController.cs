@@ -51,7 +51,7 @@ namespace cinema_api.Controllers
 			await _applicationContext.SaveChangesAsync();
 
 			GenreDTO genreDTO = _mapper.Map<GenreDTO>(newGenre);
-			return new CreatedAtRouteResult("GetById", new { id = genreDTO.Id }, genreDTO);
+			return new CreatedAtRouteResult("GetById", new { id = newGenre.Id }, genreDTO);
 		}
 
 		[HttpPut("{id:int}")]
