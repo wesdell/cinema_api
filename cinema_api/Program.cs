@@ -1,3 +1,6 @@
+using cinema_api.Services;
+using cinema_api.Utils;
+using CloudinaryDotNet;
 using Microsoft.EntityFrameworkCore;
 
 namespace cinema_api
@@ -13,6 +16,9 @@ namespace cinema_api
 			builder.Services.AddAutoMapper(typeof(Program));
 
 			builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+			builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+			builder.Services.AddScoped<CloudinaryService>();
 
 			var app = builder.Build();
 
