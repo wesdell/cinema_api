@@ -3,6 +3,7 @@ using cinema_api.DTOs;
 using cinema_api.Entities;
 using cinema_api.Services;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -92,6 +93,38 @@ namespace cinema_api.Controllers
 			_applicationContext.Entry(actor).State = EntityState.Modified;
 			await _applicationContext.SaveChangesAsync();
 
+			return NoContent();
+		}
+
+		[HttpPatch("{id:int}")]
+		public async Task<ActionResult> Patch([FromBody] JsonPatchDocument<PatchActorDTO> patchDocument, int id)
+		{
+			if (patchDocument == null)
+			{
+				return BadRequest();
+			}
+
+			Actor actor = await _applicationContext.Actor.FirstOrDefaultAsync(actor => actor.Id == id);
+
+			if (actor == null)
+			{
+				return NotFound();
+			}
+
+			PatchActorDTO actorDTO = _mapper.Map<PatchActorDTO>(actor);
+
+			patchDocument.ApplyTo(actorDTO, ModelState);
+
+			bool isValidDocument = TryValidateModel(actorDTO);
+
+			if (!isValidDocument)
+			{
+				return BadRequest(ModelState);
+			}
+
+			_mapper.Map(actorDTO, actor);
+
+			await _applicationContext.SaveChangesAsync();
 			return NoContent();
 		}
 
