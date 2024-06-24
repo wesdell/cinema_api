@@ -8,5 +8,6 @@ namespace cinema_api.DTOs
 		[StringLength(150)]
 		public string Name { get; set; }
 		public DateTime Birthday { get; set; }
+		public IFormFile Image { get; set; }
 	}
 }
