@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using cinema_api.DTOs;
 using cinema_api.Entities;
+using cinema_api.Services;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +13,13 @@ namespace cinema_api.Controllers
 	public class ActorController : ControllerBase
 	{
 		private readonly ApplicationDBContext _applicationContext;
+		private readonly CloudinaryService _cloudinary;
 		private readonly IMapper _mapper;
 
-		public ActorController(ApplicationDBContext applicationDBContext, IMapper mapper)
+		public ActorController(ApplicationDBContext applicationDBContext, IMapper mapper, CloudinaryService cloudinary)
 		{
 			_applicationContext = applicationDBContext;
+			_cloudinary = cloudinary;
 			_mapper = mapper;
 		}
 
@@ -48,6 +52,18 @@ namespace cinema_api.Controllers
 		{
 			Actor actor = _mapper.Map<Actor>(createActorDTO);
 
+			if (createActorDTO.Image != null)
+			{
+				ImageUploadResult imageUploadResult = await _cloudinary.UploadImageAsync(createActorDTO.Image);
+
+				if (imageUploadResult.Error != null)
+				{
+					return BadRequest(imageUploadResult.Error.Message);
+				}
+
+				actor.ImageURL = imageUploadResult.SecureUrl.ToString();
+			}
+
 			_applicationContext.Add(actor);
 			await _applicationContext.SaveChangesAsync();
 
@@ -60,6 +76,18 @@ namespace cinema_api.Controllers
 		{
 			Actor actor = _mapper.Map<Actor>(updateActorDTO);
 			actor.Id = id;
+
+			if (updateActorDTO.Image != null)
+			{
+				ImageUploadResult imageUploadResult = await _cloudinary.UploadImageAsync(updateActorDTO.Image);
+
+				if (imageUploadResult.Error != null)
+				{
+					return BadRequest(imageUploadResult.Error.Message);
+				}
+
+				actor.ImageURL = imageUploadResult.SecureUrl.ToString();
+			}
 
 			_applicationContext.Entry(actor).State = EntityState.Modified;
 			await _applicationContext.SaveChangesAsync();
