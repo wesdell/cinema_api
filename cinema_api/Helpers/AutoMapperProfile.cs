@@ -15,6 +15,7 @@ namespace cinema_api.Helpers
 			CreateMap<Actor, ActorDTO>().ReverseMap();
 			CreateMap<CreateActorDTO, Actor>();
 			CreateMap<UpdateActorDTO, Actor>();
+			CreateMap<Actor, PatchActorDTO>().ReverseMap();
 		}
 	}
 }
