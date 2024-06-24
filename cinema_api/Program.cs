@@ -17,6 +17,8 @@ namespace cinema_api
 
 			builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+			builder.Services.AddControllers().AddNewtonsoftJson();
+
 			builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 			builder.Services.AddScoped<CloudinaryService>();
 
