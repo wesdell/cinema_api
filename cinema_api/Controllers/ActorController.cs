@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using cinema_api.DTOs;
 using cinema_api.Entities;
+using cinema_api.Helpers;
 using cinema_api.Services;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.JsonPatch;
@@ -25,9 +26,12 @@ namespace cinema_api.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<List<ActorDTO>>> GetAll()
+		public async Task<ActionResult<List<ActorDTO>>> GetAll([FromQuery] PaginationDTO paginationDTO)
 		{
-			List<Actor> authors = await _applicationContext.Actor.ToListAsync();
+			IQueryable<Actor> queryable = _applicationContext.Actor.AsQueryable();
+			await HttpContext.InsertPaginationParameters(queryable, paginationDTO.RecordsToShowPerPage);
+
+			List<Actor> authors = await queryable.Paginate(paginationDTO).ToListAsync();
 
 			List<ActorDTO> authorDTOs = _mapper.Map<List<ActorDTO>>(authors);
 			return authorDTOs;
