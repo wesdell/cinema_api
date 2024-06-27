@@ -9,7 +9,7 @@ namespace cinema_api.Controllers
 {
 	[ApiController]
 	[Route("api/movie")]
-	public class MovieController
+	public class MovieController : ControllerBase
 	{
 		private readonly ApplicationDBContext _applicationContext;
 		private readonly CloudinaryService _cloudinary;
@@ -29,6 +29,20 @@ namespace cinema_api.Controllers
 
 			List<MovieDTO> movieDTOs = _mapper.Map<List<MovieDTO>>(movies);
 			return movieDTOs;
+		}
+
+		[HttpGet("{id:int}", Name = "GetMovieById")]
+		public async Task<ActionResult<MovieDTO>> GetById(int id)
+		{
+			Movie movie = await _applicationContext.Movie.FirstOrDefaultAsync(movie => movie.Id == id);
+
+			if (movie == null)
+			{
+				return NotFound();
+			}
+
+			MovieDTO movieDTO = _mapper.Map<MovieDTO>(movie);
+			return movieDTO;
 		}
 	}
 }
