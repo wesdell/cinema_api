@@ -79,6 +79,13 @@ namespace cinema_api.Controllers
 		[HttpPut("{id:int}")]
 		public async Task<ActionResult> Put([FromForm] UpdateActorDTO updateActorDTO, int id)
 		{
+			bool existsActor = await _applicationContext.Actor.AnyAsync(actor => actor.Id == id);
+
+			if (!existsActor)
+			{
+				return NotFound();
+			}
+
 			Actor actor = _mapper.Map<Actor>(updateActorDTO);
 			actor.Id = id;
 
@@ -106,6 +113,13 @@ namespace cinema_api.Controllers
 			if (patchDocument == null)
 			{
 				return BadRequest();
+			}
+
+			bool existsActor = await _applicationContext.Actor.AnyAsync(actor => actor.Id == id);
+
+			if (!existsActor)
+			{
+				return NotFound();
 			}
 
 			Actor actor = await _applicationContext.Actor.FirstOrDefaultAsync(actor => actor.Id == id);

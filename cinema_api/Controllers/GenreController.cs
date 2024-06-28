@@ -57,6 +57,13 @@ namespace cinema_api.Controllers
 		[HttpPut("{id:int}")]
 		public async Task<ActionResult> Put([FromBody] UpdateGenreDTO updateGenreDTO, int id)
 		{
+			bool existsGenre = await _applicationContext.Genre.AnyAsync(genre => genre.Id == id);
+
+			if (!existsGenre)
+			{
+				return NotFound();
+			}
+
 			Genre newGenre = _mapper.Map<Genre>(updateGenreDTO);
 			newGenre.Id = id;
 
