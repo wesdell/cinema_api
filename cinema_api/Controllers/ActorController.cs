@@ -115,13 +115,6 @@ namespace cinema_api.Controllers
 				return BadRequest();
 			}
 
-			bool existsActor = await _applicationContext.Actor.AnyAsync(actor => actor.Id == id);
-
-			if (!existsActor)
-			{
-				return NotFound();
-			}
-
 			Actor actor = await _applicationContext.Actor.FirstOrDefaultAsync(actor => actor.Id == id);
 
 			if (actor == null)
