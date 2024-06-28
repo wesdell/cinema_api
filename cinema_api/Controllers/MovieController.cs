@@ -69,5 +69,37 @@ namespace cinema_api.Controllers
 			MovieDTO movieDTO = _mapper.Map<MovieDTO>(movie);
 			return new CreatedAtRouteResult("GetMovieById", new { id = movie.Id }, movieDTO);
 		}
+
+		[HttpPut("{id:int}")]
+		public async Task<ActionResult> Put([FromForm] UpdateMovieDTO updateMovieDTO, int id)
+		{
+			bool existsMovie = await _applicationContext.Movie.AnyAsync(movie => movie.Id == id);
+
+			if (!existsMovie)
+			{
+				return NotFound();
+			}
+
+			Movie movie = _mapper.Map<Movie>(updateMovieDTO);
+			movie.Id = id;
+
+			if (updateMovieDTO.Poster != null)
+			{
+				ImageUploadResult imageUploadResult = await _cloudinary.UploadImageAsync(updateMovieDTO.Poster);
+
+				if (imageUploadResult.Error != null)
+				{
+					return BadRequest(imageUploadResult.Error.Message);
+				}
+
+				movie.PosterURL = imageUploadResult.SecureUrl.ToString();
+			}
+
+			_applicationContext.Entry(movie).State = EntityState.Modified;
+			await _applicationContext.SaveChangesAsync();
+
+			return NoContent();
+		}
+
 	}
 }
