@@ -2,6 +2,7 @@
 using cinema_api.DTOs;
 using cinema_api.Entities;
 using cinema_api.Services;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,30 @@ namespace cinema_api.Controllers
 
 			MovieDTO movieDTO = _mapper.Map<MovieDTO>(movie);
 			return movieDTO;
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> Post([FromForm] CreateMovieDTO createMovieDTO)
+		{
+			Movie movie = _mapper.Map<Movie>(createMovieDTO);
+
+			if (createMovieDTO.Poster != null)
+			{
+				ImageUploadResult imageUploadResult = await _cloudinary.UploadImageAsync(createMovieDTO.Poster);
+
+				if (imageUploadResult.Error != null)
+				{
+					return BadRequest(imageUploadResult.Error.Message);
+				}
+
+				movie.PosterURL = imageUploadResult.SecureUrl.ToString();
+			}
+
+			_applicationContext.Add(movie);
+			await _applicationContext.SaveChangesAsync();
+
+			MovieDTO movieDTO = _mapper.Map<MovieDTO>(movie);
+			return new CreatedAtRouteResult("GetMovieById", new { id = movie.Id }, movieDTO);
 		}
 	}
 }
