@@ -15,5 +15,6 @@ namespace cinema_api.DTOs
 		[FileSize(fileMaxSizeMB: 4)]
 		[FileType(validFileTypes: EFileType.Image)]
 		public IFormFile Poster { get; set; }
+		public List<int> GenreIds { get; set; }
 	}
 }
