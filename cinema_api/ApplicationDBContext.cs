@@ -12,6 +12,7 @@ namespace cinema_api
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<MovieGenre>().HasKey(opt => new { opt.MovieId, opt.GenreId });
+			modelBuilder.Entity<MovieActor>().HasKey(opt => new { opt.MovieId, opt.ActorId });
 
 			base.OnModelCreating(modelBuilder);
 		}
