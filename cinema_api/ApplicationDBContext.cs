@@ -20,5 +20,6 @@ namespace cinema_api
 		public DbSet<Actor> Actor { get; set; }
 		public DbSet<Movie> Movie { get; set; }
 		public DbSet<MovieGenre> MovieGenre { get; set; }
+		public DbSet<MovieActor> MovieActor { get; set; }
 	}
 }
